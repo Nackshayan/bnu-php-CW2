@@ -4,39 +4,37 @@ include("_includes/config.inc");
 include("_includes/dbconnect.inc");
 include("_includes/functions.inc");
 
-
-// check logged in
 if (isset($_SESSION['id'])) {
 
    echo template("templates/partials/header.php");
    echo template("templates/partials/nav.php");
 
-   // If a module has been selected
    if (isset($_POST['selmodule'])) {
-      $sql = "insert into studentmodules values ('" .  $_SESSION['id'] . "','" . $_POST['selmodule'] . "');";
+      $sql = "INSERT INTO studentmodules VALUES ('" . mysqli_real_escape_string($mysqli, $_SESSION['id']) . "', '" . mysqli_real_escape_string($mysqli, $_SESSION['id']) ."';";
       $result = mysqli_query($conn, $sql);
-      $data['content'] .= "<p>The module " . $_POST['selmodule'] . " has been assigned to you</p>";
+      $data['content'] .= "<div class='alert alert-success'>The module " . htmlspecialchars($_POST['selmodule']) . " has been assigned to you.</div>";
    }
-   else  // If a module has not been selected
-   {
+   else {
 
-     // Build sql statment that selects all the modules
-     $sql = "select * from module";
-     $result = mysqli_query($conn, $sql);
+     $sql = "SELECT * FROM module";
+     $result = mysqli_query($mysqli, $sql);
 
-     $data['content'] .= "<form name='frmassignmodule' action='' method='post' >";
-     $data['content'] .= "Select a module to assign<br/>";
-     $data['content'] .= "<select name='selmodule' >";
-     // Display the module name sin a drop down selection box
+     $data['content'] .= "<div class='container'>";
+     $data['content'] .= "<h2>Assign Module</h2>";
+     $data['content'] .= "<form name='frmassignmodule' action='' method='post'>";
+     $data['content'] .= "<div class='mb-3'>";
+     $data['content'] .= "<label for='selmodule' class='form-label'>Select a module to assign</label>";
+     $data['content'] .= "<select name='selmodule' class='form-select'>";
+
      while($row = mysqli_fetch_array($result)) {
-        $data['content'] .= "<option value='$row[modulecode]'>$row[name]</option>";
+        $data['content'] .= "<option value='" . htmlspecialchars($row['modulecode']) . "'>" . htmlspecialchars($row['name']) . "</option>";
      }
-     $data['content'] .= "</select><br/>";
-     $data['content'] .= "<input type='submit' name='confirm' value='Save' />";
+     $data['content'] .= "</select>";
+     $data['content'] .= "</div>";
+     $data['content'] .= "<button type='submit' name='confirm' class='btn btn-primary'>Save</button>";
      $data['content'] .= "</form>";
+     $data['content'] .= "</div>"; 
    }
-
-   // render the template
    echo template("templates/default.php", $data);
 
 } else {

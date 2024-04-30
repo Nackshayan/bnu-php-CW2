@@ -1,27 +1,23 @@
 <?php
+include("_includes/config.inc");
+include("_includes/dbconnect.inc");
+include("_includes/functions.inc");
 
-   include("_includes/config.inc");
-   include("_includes/dbconnect.inc");
-   include("_includes/functions.inc");
+$data = [];
+if (isset($_SESSION['message'])) { 
+    $data['message'] = "<div class='alert alert-danger' role='alert'>" . $_SESSION['message'] . "</div>";
+    unset($_SESSION['message']);  
+}
 
-   echo template("templates/partials/header.php");
+echo template("templates/partials/header.php");
 
-   if (isset($_GET['return'])) {
-      $msg = "";
-      if ($_GET['return'] == "fail") {$msg = "Login Failed. Please try again.";}
-      $data['message'] = "<p>$msg</p>";
-   }
+if (isset($_SESSION['id'])) {
+    $data['content'] = "<div class='container mt-4'><p>Welcome to your dashboard.</p></div>";
+    echo template("templates/partials/nav.php");
+    echo template("templates/default.php", $data);
+} else {
+    echo template("templates/login.php", $data);
+}
 
-   if (isset($_SESSION['id'])) {
-      $data['content'] = "<p>Welcome to your dashboard.";
-      echo template("templates/partials/nav.php");
-      echo template("templates/default.php", $data);
-   } else {
-      echo template("templates/login.php", $data);
-   }
-
-   echo template("templates/partials/footer.php");
-
-   // another test edit
-
+echo template("templates/partials/footer.php");
 ?>

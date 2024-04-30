@@ -1,10 +1,12 @@
 <?php
-	//  replace mysqllogin and mysqlpassword with your own
-	$conn = mysqli_connect("localhost", "root", "", "oss-cw2");
+$host = 'localhost'; 
+$user = 'root'; 
+$password = ''; 
+$database = 'bnu-php-CW2'; 
 
-	if (mysqli_connect_errno()) {
-		echo "Failed to connect to MySQL: " . mysqli_connect_error();
-		die();
-	}
+$mysqli = new mysqli($host, $user, $password, $database);
 
+if ($mysqli->connect_error) {
+    die("Connection failed: " . $mysqli->connect_error);
+}
 ?>
